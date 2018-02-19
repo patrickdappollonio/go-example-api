@@ -7,6 +7,7 @@ import (
 
 const project = "https://github.com/patrickdappollonio/go-example-api"
 
-func nocontent(w http.ResponseWriter, r *http.Request) {
+func home(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	fmt.Fprintln(w, "Usage at:", project)
 }
