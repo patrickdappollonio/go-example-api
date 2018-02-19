@@ -10,7 +10,7 @@ import (
 	"google.golang.org/appengine/memcache"
 )
 
-const expiration = 3 * time.Hour
+const expiration = 24 * time.Hour
 
 var notfound = errors.New("not found")
 

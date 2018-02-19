@@ -12,7 +12,7 @@ site. That also means the data sent to `/save` will be checked to see if it can 
 parsed as JSON.
 
 An important note is that data is saved in a best-effort basis under the Memcache
-service in Google App Engine. By default, we set the expiration to 3 hours but there
+service in Google App Engine. By default, we set the expiration to 24 hours but there
 are no guarantees that it'll stay for that long.
 
 There's no support for updating resources. If you want to update one, consider creating
