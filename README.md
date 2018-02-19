@@ -42,7 +42,8 @@ or another web-based flow.
 * `(GET|POST) /authorize`: This creates a JSON Web Token that expires in 3 hours
   and you can use to create resources by issuing `POST` requests to `/save`. The
   content type of the response is simply `text/plain` with some instructions and
-  a pointer to this documentation.
+  a pointer to this documentation. This endpoint isn't affected by modifiers (see
+  below to understand about modifiers).
 
 ## Modifiers
 
