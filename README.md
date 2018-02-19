@@ -27,6 +27,11 @@ or another web-based flow.
 
 ## Endpoints
 
+As an important side note, illegal, malformed requests that can't happen, like a
+`GET` request with a body will be caught by Google's AppEngine proxy and you'll
+receive a `400 Malformed Request` from Google. There may be other case scenarios
+where this can happen.
+
 * `POST /save`: Creates a new resource. The response will contain no body, but a
   status code `201 Created` and a `Location` header pointing to `/get/:id`. This
   requires an `Authorization` token to be set.
