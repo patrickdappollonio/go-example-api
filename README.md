@@ -64,3 +64,22 @@ that are removed from the response body on `/debug`.
   the status override like `/get/:id?status=404`. You'll get the body (which should be
   the error JSON data you saved before) but with a 404 status code. Status codes are ommitted
   if `< 100` or `> 599`.
+
+## Deploying and developing this codebase
+
+To deploy the code, simply create an app in Google App Engine. That'll give you an ID, in this
+case is `go-example-api`. Then, to deploy, run:
+
+```bash
+gcloud app deploy appengine/app.yaml --project=go-example-api
+```
+
+Remember to replace `go-example-api` with your own ID -- since you can't post to mine.
+
+To develop locally, you can install the Google SDK -- which you'll have if you install the
+`gcloud` binaries. Then, use the Python file in your installation folder, `dev_appserver.py`
+to run the local dev server, as follows:
+
+```bash
+dev_appserver.py appengine/app.yaml
+```

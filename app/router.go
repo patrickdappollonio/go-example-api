@@ -1,7 +1,6 @@
 package app
 
 import (
-	"fmt"
 	"net/http"
 
 	"github.com/go-chi/chi"
@@ -9,9 +8,9 @@ import (
 
 func Router() http.Handler {
 	r := chi.NewRouter()
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintln(w, "Hello, world!")
-	})
+
+	r.Get("/", nocontent)
+	r.With(statusCode, delayer).HandleFunc("/debug", debug)
 
 	return r
 }
