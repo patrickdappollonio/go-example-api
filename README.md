@@ -4,26 +4,22 @@ This is a simple Go API that allows you to save and fetch data from it. It uses
 a Simple approach to save data to the Google App Engine datastore using the key
 from it as the resource URL.
 
-To use it, you need to get a token first. Each token expires in 3 hours and currently
-I offer no way to refresh it. This is intentional so people always have to create new
-tokens and they don't abuse the service.
-
-The tokens are used with the `Authorization: Bearer AABBCC` header so simply send
-the request with the given header, replacing `AABBCC` with the proper token, and your
-request will be fulfilled.
-
 Save data by sending a `POST` request to `/save`. While saving, you'll be returned a
 `201 Created` header with a `Location` header pointing to the saved resource. The
 content saved will be returned with `Content-Type: application/json; charset=utf-8`
 which, again, is intentional so people don't save, say, HTML to render a phishing
-site.
+site. That also means the data sent to `/save` will be checked to see if it can be
+parsed as JSON.
+
+An important note is that data is saved in a best-effort basis under the Memcache
+service in Google App Engine. By default, we set the expiration to 3 hours but there
+are no guarantees that it'll stay for that long.
 
 There's no support for updating resources. If you want to update one, consider creating
 a new resource from scratch issuing a `POST` to `/save`.
 
 This API has CORS headers so, yes, you can use them through your Single-Page Application
 or another web-based flow.
-
 
 ## Endpoints
 
@@ -33,8 +29,7 @@ receive a `400 Malformed Request` from Google. There may be other case scenarios
 where this can happen.
 
 * `POST /save`: Creates a new resource. The response will contain no body, but a
-  status code `201 Created` and a `Location` header pointing to `/get/:id`. This
-  requires an `Authorization` token to be set.
+  status code `201 Created` and a `Location` header pointing to `/get/:id`.
 * `GET /get/:id`: Where `:id` is the alphanumeric ID of the given resource you're
   fetching. `GET` will fetch the whole data saved to the storage you created when
   issuing the `POST` to `/save`. This endpoint does not require the `Authorization`
@@ -44,18 +39,12 @@ where this can happen.
   in the body. The response will be in the format of:
   `{ "headers": [], "body": {}, "query": [] }`. The querystring modifiers are
   removed for simplicity.
-* `(GET|POST) /authorize`: This creates a JSON Web Token that expires in 3 hours
-  and you can use to create resources by issuing `POST` requests to `/save`. The
-  content type of the response is simply `text/plain` with some instructions and
-  a pointer to this documentation. This endpoint isn't affected by modifiers (see
-  below to understand about modifiers).
 
 ## Modifiers
 
 The API supports two modifiers to the response. These are set so you can use them
-to debug asynchronous calls to this API with expected responses. All requests except
-for `/authorize` supports them. The modifiers are passed as querystring parameters
-that are removed from the response body on `/debug`.
+to debug asynchronous calls to this API with expected responses. The modifiers are
+passed as querystring parameters that are removed from the response body on `/debug`.
 
 * `delay=${time}` where `${time}` can be any number of seconds up to 50 seconds max,
   this due to App Engine restrictions (more on that below). This utility is useful for
