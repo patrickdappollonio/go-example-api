@@ -47,9 +47,15 @@ func binget(w http.ResponseWriter, r *http.Request) {
 	responses := r.Context().Value(BIN_PREFIX).([]debugresponse)
 	id := r.Context().Value(ID_KEY).(string)
 
+	heading := fmt.Sprintf("%d request", len(responses))
+	if len(responses) != 1 {
+		heading += "s"
+	}
+
 	data := map[string]interface{}{
 		"ID":      id,
 		"Records": responses,
+		"Heading": heading,
 	}
 
 	if err := tmplRead.Execute(w, data); err != nil {

@@ -112,7 +112,7 @@ const _read_bins = `<!doctype html>
 	<body>
 		<div id="top" class="container">
 			<div class="col">
-				<h1 class="display-4">Reviewing requests to <code>/r/{{ .ID }}</code></h1>
+				<h1 class="display-4">Reviewing {{ .Heading }} to <code>/r/{{ .ID }}</code></h1>
 				<p class="lead">Below you'll find all requests sent to the URL above, showing newest first. Requests
 				<strong>will live for 24 hours before being deleted from the server</strong>.</p>
 			</div>
@@ -122,7 +122,7 @@ const _read_bins = `<!doctype html>
 				{{ if .Records }}{{ range .Records }}
 				<div class="card">
 					<div class="card-body">
-						<h5 class="card-title"><code>{{ .Method }} {{ .Path }}</code></h5>
+						<h5 class="card-title"><code>HTTP {{ .Method }} {{ .Path }}</code></h5>
 						<h6 class="card-subtitle mb-2 text-muted">Saved on {{ .Time.Format date }}</h6>
 
 						<div class="sep"></div>
@@ -153,6 +153,7 @@ const _read_bins = `<!doctype html>
 						</p>
 						{{ end }}
 
+						{{ if not (eq .Method "GET") }}
 						<h6 class="section-title">Body:</h6>
 						<p class="card-text">
 							{{ if .Body }}
@@ -161,6 +162,7 @@ const _read_bins = `<!doctype html>
 								<em>Request body had no content.</em>
 							{{ end }}
 						</p>
+						{{ end }}
 					</div>
 				</div>
 				{{ end }}{{ else }}
