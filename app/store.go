@@ -5,21 +5,20 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/rs/xid"
+	shortid "github.com/SKAhack/go-shortid"
 	"google.golang.org/appengine"
 	"google.golang.org/appengine/memcache"
 )
 
 const expiration = 24 * time.Hour
 
-var notfound = errors.New("not found")
-
-type saveable struct {
-	Content string
-}
+var (
+	notfound = errors.New("not found")
+	keygen   = shortid.Generator()
+)
 
 func key() string {
-	return xid.New().String()
+	return keygen.Generate()
 }
 
 func saveContent(r *http.Request, c string) (string, error) {
