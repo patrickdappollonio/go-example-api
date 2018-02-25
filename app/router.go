@@ -11,6 +11,7 @@ func Router() http.Handler {
 	setupTemplate()
 
 	r := chi.NewRouter()
+	r.Use(canonical("request.tools"))
 	r.Use(cors.Default().Handler)
 
 	r.Get("/", home)

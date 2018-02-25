@@ -68,6 +68,8 @@ func binget(w http.ResponseWriter, r *http.Request) {
 }
 
 func binsave(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+
 	var (
 		responses = r.Context().Value(BIN_PREFIX).([]debugresponse)
 		id        = r.Context().Value(ID_KEY).(string)

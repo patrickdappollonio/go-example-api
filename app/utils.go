@@ -30,7 +30,7 @@ func cleanup(m interface{}) map[string][]string {
 			continue
 		}
 
-		if k == "X-Cloud-Trace-Context" {
+		if k == "X-Cloud-Trace-Context" || k == "X-Google-Apps-Metadata" {
 			continue
 		}
 
