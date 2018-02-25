@@ -22,6 +22,7 @@ func Router() http.Handler {
 	r.Get("/inspector", bincreate)
 	r.With(validID, loadPrevious).Get("/inspector/{id}", binget)
 	r.With(safeVerbs, validID, loadPrevious).HandleFunc("/r/{id}", binsave)
+	r.With(validID).Get("/inspector/{id}/delete", bindelete)
 
 	return r
 }

@@ -54,3 +54,7 @@ func getContent(r *http.Request, key string) (string, error) {
 
 	return string(item.Value), nil
 }
+
+func deleteContent(r *http.Request, key string) {
+	memcache.Delete(appengine.NewContext(r), key)
+}

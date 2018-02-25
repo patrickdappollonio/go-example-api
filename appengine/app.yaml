@@ -2,5 +2,10 @@ runtime: go
 api_version: go1.8
 
 handlers:
+- url: /inspector/(.*)/delete
+  login: required
+  secure: always
+  script: _go_app
 - url: /.*
+  secure: always
   script: _go_app

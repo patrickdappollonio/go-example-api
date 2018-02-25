@@ -8,6 +8,9 @@ import (
 	"log"
 	"net/http"
 	"time"
+
+	"google.golang.org/appengine"
+	"google.golang.org/appengine/user"
 )
 
 const BIN_PREFIX = "requests_"
@@ -101,4 +104,26 @@ func binsave(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fmt.Fprintf(w, "Saved! Now check /inspector/%s to inspect it.", id)
+}
+
+func bindelete(w http.ResponseWriter, r *http.Request) {
+	id := r.Context().Value(ID_KEY).(string)
+	key := BIN_PREFIX + id
+	ctx := appengine.NewContext(r)
+
+	u := user.Current(ctx)
+	if u == nil {
+		dest, _ := user.LoginURL(ctx, r.URL.Host)
+		http.Redirect(w, r, dest, http.StatusFound)
+		return
+	}
+
+	if !u.Admin {
+		dest, _ := user.LogoutURL(ctx, "/")
+		fmt.Fprintf(w, "I'm sorry, but your email %q is not allowed as an administrator of this site.\nLogout: %s", u.Email, dest)
+		return
+	}
+
+	deleteContent(r, key)
+	fmt.Fprintln(w, "Inspector data for ID:", id, "was deleted from Memcache")
 }
