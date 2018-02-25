@@ -22,9 +22,13 @@ func key() string {
 }
 
 func saveContent(r *http.Request, c string) (string, error) {
+	return saveContentWithKey(r, key(), c)
+}
+
+func saveContentWithKey(r *http.Request, key, c string) (string, error) {
 	ctx := appengine.NewContext(r)
 	item := memcache.Item{
-		Key:        key(),
+		Key:        key,
 		Value:      []byte(c),
 		Expiration: expiration,
 	}

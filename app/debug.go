@@ -3,22 +3,17 @@ package app
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"strings"
+	"time"
 )
-
-type debugresponse struct {
-	Headers map[string]interface{} `json:"headers"`
-	Body    interface{}            `json:"body"`
-	Query   map[string]interface{} `json:"query,omitempty"`
-}
 
 func debug(w http.ResponseWriter, r *http.Request) {
 	data := debugresponse{
+		Method:  r.Method,
+		Path:    r.URL.Path,
 		Headers: cleanup(r.Header),
+		Time:    time.Now(),
 	}
 
 	var buf bytes.Buffer
@@ -41,52 +36,4 @@ func debug(w http.ResponseWriter, r *http.Request) {
 	}
 
 	json.NewEncoder(w).Encode(data)
-}
-
-func cleanup(m interface{}) map[string]interface{} {
-	h := make(map[string][]string)
-
-	switch a := m.(type) {
-	case http.Header:
-		h = a
-	case url.Values:
-		h = a
-	default:
-		return nil
-	}
-
-	local := make(map[string]interface{})
-
-	for k, v := range h {
-		if strings.HasPrefix(k, "X-Appengine") {
-			continue
-		}
-
-		if strings.HasPrefix(k, "X-Goog-Cloud-Shell") {
-			continue
-		}
-
-		if k == "X-Cloud-Trace-Context" {
-			continue
-		}
-
-		var (
-			value interface{}
-			key   = strings.ToLower(k)
-		)
-
-		if len(v) == 1 {
-			value = v[0]
-		} else {
-			value = v
-		}
-
-		if key == "via" && fmt.Sprintf("%v", value) == "1.1 google" {
-			continue
-		}
-
-		local[key] = value
-	}
-
-	return local
 }
