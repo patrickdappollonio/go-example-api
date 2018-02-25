@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi"
 )
 
-var reIsValidParam = regexp.MustCompile(`^[a-v0-9]+$`)
+var reIsValidParam = regexp.MustCompile(`^[\w|\-]+$`)
 
 func save(w http.ResponseWriter, r *http.Request) {
 	var buf bytes.Buffer
@@ -44,7 +44,7 @@ func get(w http.ResponseWriter, r *http.Request) {
 
 	if !reIsValidParam.MatchString(id) {
 		w.WriteHeader(http.StatusNotFound)
-		errorJSON(w, "Record with ID %q not found", id)
+		errorJSON(w, "Record with ID %q doesn't look like a valid ID", id)
 		return
 	}
 
