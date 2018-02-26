@@ -15,6 +15,7 @@ func Router() http.Handler {
 	r.Use(cors.Default().Handler)
 
 	r.Get("/", home)
+	r.Get("/favicon.ico", favicon)
 	r.With(statusCode, delayer).HandleFunc("/debug", debug)
 
 	r.With(statusCode, delayer).Post("/save", save)
