@@ -9,6 +9,7 @@ import (
 
 func Router() http.Handler {
 	setupTemplate()
+	generateRandomData()
 
 	r := chi.NewRouter()
 	r.Use(canonical("request.tools"))
@@ -25,6 +26,18 @@ func Router() http.Handler {
 	r.With(validID, loadPrevious).Get("/inspector/{id}", binget)
 	r.With(safeVerbs, validID, loadPrevious).HandleFunc("/r/{id}", binsave)
 	r.With(validID).Get("/inspector/{id}/delete", bindelete)
+
+	r.Route("/f", func(r chi.Router) {
+		r.Get("/", fakerest)
+		r.Get("/users", fakeusers)
+		r.With(validNumericID, asJSON).Get("/users/{id}", fakesingleuser)
+		r.Get("/posts", fakeposts)
+		r.With(validNumericID, asJSON).Get("/posts/{id}", fakesinglepost)
+		r.Get("/domains", fakedomains)
+		r.With(validNumericID, asJSON).Get("/domains/{id}", fakesingledomain)
+		r.Get("/products", fakeproducts)
+		r.With(validNumericID, asJSON).Get("/products/{id}", fakesingleproduct)
+	})
 
 	return r
 }

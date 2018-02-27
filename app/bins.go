@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"google.golang.org/appengine"
-	"google.golang.org/appengine/user"
+	acct "google.golang.org/appengine/user"
 )
 
 const BIN_PREFIX = "requests_"
@@ -113,15 +113,15 @@ func bindelete(w http.ResponseWriter, r *http.Request) {
 	key := BIN_PREFIX + id
 	ctx := appengine.NewContext(r)
 
-	u := user.Current(ctx)
+	u := acct.Current(ctx)
 	if u == nil {
-		dest, _ := user.LoginURL(ctx, r.URL.Host)
+		dest, _ := acct.LoginURL(ctx, r.URL.Host)
 		http.Redirect(w, r, dest, http.StatusFound)
 		return
 	}
 
 	if !u.Admin {
-		dest, _ := user.LogoutURL(ctx, "/")
+		dest, _ := acct.LogoutURL(ctx, "/")
 		fmt.Fprintf(w, "I'm sorry, but your email %q is not allowed as an administrator of this site.\nLogout: %s", u.Email, dest)
 		return
 	}
