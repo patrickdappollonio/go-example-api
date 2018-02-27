@@ -67,12 +67,18 @@ func getSingle(w http.ResponseWriter, r *http.Request, name string, sl slicer) {
 	}
 }
 
-func genhome(resources ...string) map[string][]string {
+func genhome(r *http.Request, resources ...string) map[string][]string {
+	prefix := "http"
+	if r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https" {
+		prefix += "s"
+	}
+
 	m := make(map[string][]string)
+
 	for _, v := range resources {
 		m[v] = []string{
-			"/f/" + v + "",
-			"/f/" + v + "/{id}",
+			prefix + "://" + r.Host + "/f/" + v + "",
+			prefix + "://" + r.Host + "/f/" + v + "/{id}",
 		}
 	}
 
@@ -80,7 +86,7 @@ func genhome(resources ...string) map[string][]string {
 }
 
 func fakerest(w http.ResponseWriter, r *http.Request) {
-	resp := genhome("users", "domains", "products")
+	resp := genhome(r, "users", "domains", "products")
 
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		errorJSON(w, "Unable to return JSON body: %s", err.Error())
