@@ -86,7 +86,7 @@ func genhome(r *http.Request, resources ...string) map[string][]string {
 }
 
 func fakerest(w http.ResponseWriter, r *http.Request) {
-	resp := genhome(r, "users", "domains", "products")
+	resp := genhome(r, "users", "domains", "products", "posts")
 
 	if err := json.NewEncoder(w).Encode(resp); err != nil {
 		errorJSON(w, "Unable to return JSON body: %s", err.Error())
