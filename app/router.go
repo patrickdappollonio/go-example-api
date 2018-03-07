@@ -13,6 +13,7 @@ func Router() http.Handler {
 
 	r := chi.NewRouter()
 	r.Use(canonical("request.tools"))
+	r.Use(disableAccess)
 	r.Use(cors.Default().Handler)
 
 	r.Get("/", home)
@@ -24,6 +25,7 @@ func Router() http.Handler {
 
 	r.Get("/inspector", bincreate)
 	r.With(validID, loadPrevious).Get("/inspector/{id}", binget)
+	r.Handle("/r", http.RedirectHandler("/inspector", http.StatusFound))
 	r.With(safeVerbs, validID, loadPrevious).HandleFunc("/r/{id}", binsave)
 	r.With(validID).Get("/inspector/{id}/delete", bindelete)
 
